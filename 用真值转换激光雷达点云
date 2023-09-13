@@ -42,3 +42,16 @@ for i,data in enumerate(data_list):
     np.savetxt("D:/velodyne_process/"+str(timestamp_variable)+".txt", final, fmt='%.6f')
     # o3d.io.write_point_cloud("D:/velodyne_process/"+str(timestamp_variable)+".txt", transformed_pc)
     print(str(timestamp_variable)+' finished')
+
+import numpy as np
+import glob
+data_dir='D:/velodyne_process/*'
+data_list=sorted(glob.glob(data_dir),key=lambda x:int(x.split('\\')[-1].split('.')[0]))
+for i,data in enumerate(data_list):
+    if i==0:
+        pcd=np.loadtxt(data)
+    else:
+        pcd1=np.loadtxt(data)
+        pcd=np.concatenate([pcd,pcd1],axis=0)
+    print('finish')
+np.savetxt("D:/velodyne_process/pcd.txt", pcd, fmt='%.6f')
