@@ -1,0 +1,44 @@
+import numpy as np
+import glob
+import open3d as o3d
+
+gt='/xxx/timestamp.txt'
+data_dir='/xxx/*'
+data_list=sorted(glob.glob(data_dir),key=lambda x:int(x.split('\\')[-1].split('.')[0]))
+
+for i,data in enumerate(data_list):
+    pcd=np.loadtxt(data,delimiter=',')
+    pcd1=pcd[:,0:3]
+    pcd_post = o3d.geometry.PointCloud()
+    pcd_post.points = o3d.utility.Vector3dVector(pcd1)
+    timestamp = np.loadtxt(gt, delimiter=',',dtype={'names': ('timestamp', 'value1', 'value2', 'value3', 'value4', 'value5', 'value6', 'value7'), 'formats': ('U19', 'f4', 'f4', 'f4', 'f4', 'f4', 'f4', 'f4')})
+    timestamp_variable = timestamp[i][0]
+    # 定义四元数和平移向量
+    w=timestamp[i][4]
+    x=timestamp[i][5]
+    y=timestamp[i][6]
+    z=timestamp[i][7]
+    rotation = np.array([w, x, y, z])  # 四元数 [w, x, y, z]
+    xx=timestamp[i][1]
+    yy=timestamp[i][2]
+    zz=timestamp[i][3]
+    translation = np.array([xx, yy, zz]).flatten()   # 平移向量 [x, y, z]
+    # 创建变换矩阵
+    transformation = np.identity(4)
+    transformation[:3, :3] = o3d.geometry.get_rotation_matrix_from_quaternion(rotation)
+    transformation[:3, 3] = translation
+
+    # 将点云应用变换矩阵转换到目标坐标系
+    transformed_pc = pcd_post.transform(transformation)
+    points = np.asarray(transformed_pc.points)
+    label=pcd[:,3].reshape(-1,1)
+    for n in range(label.shape[0]):
+        if label[n]==174:
+            label[n]=2
+        elif label[n]==-1:
+            label[n]=1
+    final=np.concatenate([points,label],axis=1)
+    # 保存点云为 TXT 格式
+    np.savetxt("D:/velodyne_process/"+str(timestamp_variable)+".txt", final, fmt='%.6f')
+    # o3d.io.write_point_cloud("D:/velodyne_process/"+str(timestamp_variable)+".txt", transformed_pc)
+    print(str(timestamp_variable)+' finished')
