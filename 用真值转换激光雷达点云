@@ -1,3 +1,4 @@
+#每个点云帧进行转换坐标系
 import numpy as np
 import glob
 import open3d as o3d
@@ -43,6 +44,7 @@ for i,data in enumerate(data_list):
     # o3d.io.write_point_cloud("D:/velodyne_process/"+str(timestamp_variable)+".txt", transformed_pc)
     print(str(timestamp_variable)+' finished')
 
+#将所有的点云帧拼接在一起变为地图
 import numpy as np
 import glob
 data_dir='D:/velodyne_process/*'
@@ -55,3 +57,31 @@ for i,data in enumerate(data_list):
         pcd=np.concatenate([pcd,pcd1],axis=0)
     print('finish')
 np.savetxt("D:/velodyne_process/pcd.txt", pcd, fmt='%.6f')
+
+#给每个点云点赋RGB值
+with open('C:/Users/ZHANGQIANYU/Desktop/pcd.txt', 'r') as f:
+    lines = f.readlines()
+    
+for i in range(len(lines)):
+    line = lines[i]
+    data = line.strip().split()
+    if data[-1] == '0.000000':
+        data.insert(3,'120')
+        data.insert(4,'0')
+        data.insert(5,'200')
+        lines[i] = ' '.join(data) + '\n'
+    elif data[-1] == '1.000000':
+        data.insert(3,'187')
+        data.insert(4,'70')
+        data.insert(5,'156')
+        lines[i] = ' '.join(data) + '\n'
+    elif data[-1] == '2.000000':
+        data.insert(3,'232')
+        data.insert(4,'250')
+        data.insert(5,'80')
+        lines[i] = ' '.join(data) + '\n'
+    print('finish')
+        
+    with open('//orange/902_data/3-个人/21-张倩瑜/pcd_color.txt', 'a') as f:
+        f.write(lines[i])
+
