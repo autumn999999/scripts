@@ -1,0 +1,31 @@
+#修改label，添加颜色，计算各个类别的数量
+import glob
+import numpy as np
+n=0
+a=0
+b=0
+c=0
+list=glob.glob('//orange/902_data/3-个人/8-刘佳宜/待检查数据/Moon_1/velodyne/*.txt')
+list=sorted(list,key=lambda x: int(x.split('\\')[-1].split('.')[0]))
+list=list[:766]
+for x in list:
+    data=np.loadtxt(x, delimiter=',')
+    for row in data:
+        if(row[-1]==174):
+            row[-1]=2
+            c=c+1
+        elif(row[-1]==-1):
+            row[-1]=1
+            b=b+1
+        elif(row[-1]==0):
+            a=a+1
+    rgb = np.zeros([data.shape[0],3])
+    rgb[:,0:3] = [255,255,255]
+    label=data[:,3].reshape(-1,1)
+    p = np.concatenate([data[:,0:3],rgb,label],axis=1)
+    np.savetxt('//orange/902_data/3-个人/21-张倩瑜/data/Area_1/'+'Area_1_'+str(n)+'.txt',p,fmt='%.6f')
+    print('finish')
+    n=n+1
+print(a)
+print(b)
+print(c)
