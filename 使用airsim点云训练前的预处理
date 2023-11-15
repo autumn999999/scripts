@@ -5,7 +5,7 @@ n=0
 a=0
 b=0
 c=0
-list=glob.glob('//orange/902_data/3-个人/8-刘佳宜/待检查数据/Moon_1/velodyne/*.txt')
+list=glob.glob('//orange/902_data/3-个人/8-xxx/待检查数据/Moon_1/velodyne/*.txt')
 list=sorted(list,key=lambda x: int(x.split('\\')[-1].split('.')[0]))
 list=list[:766]
 for x in list:
@@ -23,9 +23,41 @@ for x in list:
     rgb[:,0:3] = [255,255,255]
     label=data[:,3].reshape(-1,1)
     p = np.concatenate([data[:,0:3],rgb,label],axis=1)
-    np.savetxt('//orange/902_data/3-个人/21-张倩瑜/data/Area_1/'+'Area_1_'+str(n)+'.txt',p,fmt='%.6f')
+    np.savetxt('//orange/902_data/3-个人/21-xxx/data/Area_1/'+'Area_1_'+str(n)+'.txt',p,fmt='%.6f')
     print('finish')
     n=n+1
 print(a)
 print(b)
 print(c)
+
+
+
+# Point transformer预测后将xyz数据和pred label拼接在一起
+import numpy as np
+import glob
+import os
+
+# 指定包含npy文件的文件夹路径
+label_path = '//orange/902_data/3-个人/21-xxx/2_月面/展示动画/best'
+data_path = '//orange/902_data/3-个人/21-xxx/2_月面/展示动画/process_data/*.txt'
+output_path = '//orange/902_data/3-个人/21-xxx/2_月面/展示动画/result/'
+
+label_list=[]
+for file_name in os.listdir(label_path):
+    if 'pred' in file_name:
+        label_list.append(file_name)
+label_list=sorted(label_list,key=lambda x: int(x.split('.')[0].split('_')[2]))
+
+data_list=sorted(glob.glob(data_path),key=lambda x: int(x.split('\\')[-1].split('.')[0].split('_')[-1]))
+
+for i in range(634):
+
+    data = np.loadtxt(data_list[i], usecols=(0, 1, 2))
+
+    label = np.load('//orange/902_data/3-个人/21-xxx/2_月面/展示动画/best/'+label_list[i]).reshape(-1,1)
+
+    combined_data = np.concatenate((data, label), axis=1)
+
+    print('combine',data_list[i],label_list[i])
+
+    np.savetxt(output_path+'Area_2_'+str(i)+'.txt', combined_data,fmt='%.6f')
