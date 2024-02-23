@@ -25,8 +25,8 @@ DATA ascii
             pcd_file.write(line)
 
 # 指定TXT文件路径和PCD文件保存路径
-txt_file_path = 'C:/Users/ZHANGQIANYU/Desktop/1.txt'  # 替换为你的输入文件路径
-pcd_file_path = 'C:/Users/ZHANGQIANYU/Desktop/1.pcd'  # 替换为你想保存的输出文件路径
+txt_file_path = 'C:/Users/xxxx/Desktop/1.txt'  # 替换为你的输入文件路径
+pcd_file_path = 'C:/Users/xxxx/Desktop/1.pcd'  # 替换为你想保存的输出文件路径
 
 # 调用函数
 save_txt_to_pcd(txt_file_path, pcd_file_path)
