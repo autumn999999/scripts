@@ -2,6 +2,10 @@ def save_txt_to_pcd(txt_file_path, pcd_file_path):
     # 读取TXT文件
     with open(txt_file_path, 'r') as txt_file:
         lines = txt_file.readlines()
+    modified_lines = []
+    for line in lines:
+        modified_line = line.strip()+' 100'+'\n'
+        modified_lines.append(modified_line)
 
     # 创建PCD文件头部
     header = """# .PCD v.7 - Point Cloud Data file format
@@ -20,13 +24,14 @@ DATA ascii
     # 将头部和点云数据写入PCD文件
     with open(pcd_file_path, 'w') as pcd_file:
         pcd_file.write(header)
-        for line in lines:
-            # 直接写入每行数据，这里假设每行的格式已经是 x y z intensity
-            pcd_file.write(line)
+        # for line in lines:
+        #     # 直接写入每行数据，这里假设每行的格式已经是 x y z intensity
+        #     pcd_file.write(line)
+        pcd_file.writelines(modified_lines)
 
 # 指定TXT文件路径和PCD文件保存路径
-txt_file_path = 'C:/Users/xxxx/Desktop/1.txt'  # 替换为你的输入文件路径
-pcd_file_path = 'C:/Users/xxxx/Desktop/1.pcd'  # 替换为你想保存的输出文件路径
+txt_file_path = "C:/Users/dell/Desktop/sparse.txt"  # 替换为你的输入文件路径
+pcd_file_path = 'C:/Users/dell/Desktop/sparse.pcd'  # 替换为你想保存的输出文件路径
 
 # 调用函数
 save_txt_to_pcd(txt_file_path, pcd_file_path)
